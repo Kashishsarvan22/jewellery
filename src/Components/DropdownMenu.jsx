@@ -1,50 +1,53 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const DropdownMenu = ({ label, items }) => {
+const DropdownMenu = ({ label, items, href }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Handle mouse events for dropdown
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
+  // If this menu item has a direct href (like ALL JEWELLERY)
+  if (href && !items) {
+    return (
+      <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <Link to={href} className="text-white text-lg font-semibold hover:bg-white hover:text-red-500 px-4 py-2 rounded-md transition">
+          {label}
+        </Link>
+      </div>
+    );
+  }
+
+  // Regular dropdown menu
   return (
-    <div
-      className="relative group"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <button className="text-white text-lg font-semibold hover:bg-white hover:text-red-500 px-1 py-3 rounded-md transition flex items-center text-nowrap">
+    <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <button className="text-white text-lg font-semibold hover:bg-white hover:text-red-500 px-4 py-2 rounded-md transition">
         {label}
-        {items && items.length > 0 && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-4 h-4 inline ml-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        )}
       </button>
+      {/* Dropdown Content */}
       {isOpen && items && items.length > 0 && (
-        <div className="absolute left-0 bg-white text-black shadow-md rounded-md w-62 p-0 max-w-screen box-border z-50">
+        <div className="absolute left-0  bg-white shadow-lg rounded-md py-2 w-56 z-50">
           {items.map((item, index) => (
-            <a
+            <Link
               key={index}
-              href={item.href}
-              className="block px-6 py-4 text-base flex items-center hover:bg-gray-100 transition-all duration-200"
+              to={item.href}
+              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 flex items-center"
             >
               {item.image && (
                 <img
                   src={item.image}
                   alt={item.label}
-                  className="w-8 h-8 mr-4 object-cover"
+                  className="w-10 h-10 object-cover rounded mr-2"
                 />
               )}
-              {item.label}
-            </a>
+              <span>{item.label}</span>
+            </Link>
           ))}
         </div>
       )}
